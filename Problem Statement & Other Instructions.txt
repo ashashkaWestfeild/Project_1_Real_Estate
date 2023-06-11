@@ -34,14 +34,6 @@ and you dont need to resubmit )
 Where RMSE is root mean square error on test file. 
 
 ---------------------------------------------------------------
-Please read through the points given below before you begin : 
-1. Your score for test data should come out to be more than 0.51
-2. You are NOT required to submit R script. However in some cases, we might ask you to send your script separately in order to verify that your submissions 
-is a result of models that you built.
-3. you can submit as many times as you want, we'll put best score obtained on the respective leader board. 
-4. Your predictions should not contain any NA values.
-5. You are free to use any predictive modelling technique.
 
----------------------------------------------------------------
 
 
