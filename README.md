@@ -12,3 +12,4 @@ But, after doing DIAGNOSTIC PLOTS we understand that data has NON-LINEARITY.
 Therefore, made the final_rf_model1.RDS using RANDOM FOREST.
 
 I have uploaded housing_train.csv, housing_test.csv, final_rf_model1.RDS files in this repository. 
+I have uploaded my predicted values in "Predicted value of Price for training_test.csv"
