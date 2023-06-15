@@ -76,6 +76,17 @@ sum(grepl("\\W", df$CouncilArea)) # 1607
 postcode <- sort(unique(df$Postcode))
 
 ##-----------------------
+hist(df$Rooms) # Right Skewed
+hist(df$Price) # Right Skewed
+boxplot(df$Distance) # Left Skewed
+hist(df$Bedroom2) # Right Skewed
+hist(df$Bathroom) # Right Skewed
+hist(df$Car) # Right Skewed
+boxplot(df$Landsize) # Right Skewed
+hist(df$BuildingArea) # Right Skewed
+hist(df$YearBuilt) # left Skewed
+
+##-----------------------
 # Get unique postcode for all CouncilArea(do it for all Council area)
 sort(unique(df[df$CouncilArea == "Hume", c('Postcode')]))
 
