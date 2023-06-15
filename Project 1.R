@@ -13,7 +13,7 @@ library(tidymodels)
 library(car)
 
 ## load the data
-path <- r'{C:\Users\91835\Dropbox\PC\Courses\EDVANCER_EDUVENTURES\R\PROJECT\Project1- Real Estate\}'
+path <- r'{C:\-\PROJECT\Project1- Real Estate\}'
 
 housing_train <- read.csv(paste0(path,'housing_train.csv'))
 housing_test <- read.csv(paste0(path,'housing_test.csv'))
