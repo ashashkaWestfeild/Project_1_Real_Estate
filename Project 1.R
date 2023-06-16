@@ -11,9 +11,10 @@
 library(tidyverse)
 library(tidymodels)
 library(car)
+library("corrplot")
 
 ## load the data
-path <- r'{C:\-\PROJECT\Project1- Real Estate\}'
+path <- r'{C:\Users\91835\Dropbox\PC\Courses\EDVANCER_EDUVENTURES\PROJECT\Project1- Real Estate\}'
 
 housing_train <- read.csv(paste0(path,'housing_train.csv'))
 housing_test <- read.csv(paste0(path,'housing_test.csv'))
@@ -76,8 +77,10 @@ sum(grepl("\\W", df$CouncilArea)) # 1607
 postcode <- sort(unique(df$Postcode))
 
 ##-----------------------
-hist(df$Rooms) # Right Skewed
 hist(df$Price) # Right Skewed
+
+# continuous features
+hist(df$Rooms) # Right Skewed
 boxplot(df$Distance) # Left Skewed
 hist(df$Bedroom2) # Right Skewed
 hist(df$Bathroom) # Right Skewed
@@ -85,6 +88,14 @@ hist(df$Car) # Right Skewed
 boxplot(df$Landsize) # Right Skewed
 hist(df$BuildingArea) # Right Skewed
 hist(df$YearBuilt) # left Skewed
+
+# categorical features
+barplot(table(df$Suburb)) 
+barplot(table(df$Address))
+barplot(table(df$Type))
+barplot(table(df$Method))
+barplot(table(df$SellerG))
+barplot(table(df$Postcode))
 
 ##-----------------------
 # Get unique postcode for all CouncilArea(do it for all Council area)
@@ -138,6 +149,9 @@ cor.test(df$Rooms,df$Bathroom) # cor = 0.5819089
 cor.test(df$Rooms,df$Car) # cor = 0.4087185
 cor.test(df$Rooms,df$Landsize) # cor = 0.08312395 
 
+# cor_matrix <- cor(df)
+# corrplot(cor_matrix, method = "color")
+
 # problem: Landsize is 0 for valid number of Rooms = c(1,2,3,4,5,6)
 unique(df[df$Landsize == 0 & !(is.na(df$Landsize)), c('Rooms')]) 
 # 2  3  1  4  6  5
@@ -171,7 +185,7 @@ housing_test$RoadType_other <- (!(housing_test$RoadType_Cct+housing_test$RoadTyp
 View(df)
 View(housing_test)
 
-# handling df$SellerG as it is converting it into factors, which giving ERROR while predicting 
+# seeing distribution for seller 
 seller <- data.frame('prop' = prop.table(table(df$SellerG)),
                      'count' = table(df$SellerG))
 seller <- seller[,c('prop.Var1','prop.Freq','count.Freq')]
@@ -183,6 +197,7 @@ sum(seller$count.Freq < 100) # this will remove 165 outof 182 features creating 
 # creating 2 dummy one will have all the significant seller's and other will have all the insignificant seller's
 # insignificant <- c('ASL','Besser','Blue','Buxton/Advantage','Buxton/Find','Caine','Castran','CASTRAN','Century','David','Direct','Dixon','Domain','Elite','Fletchers/One','Galldon','Garvey','Geoff','Ham','Hamilton','hockingstuart/Advantage','hockingstuart/Village','J','Joseph','Kay','Kelly','LJ','Lucas','Marshall','Matthew','Meadows','Morrison','Nick','O\'Donoghues','One','R&H','Red','Rodney','Scott','Sotheby\'s','Weast','Walsh')
  
+#converting SellerG and Suburb into characters, as SellerG is getting converted into factor.
 df$Suburb <- as.character(df$Suburb)
 df$SellerG <- as.character(df$SellerG)
 
@@ -304,7 +319,7 @@ plot(model1,2)
 plot(model1,3)
 plot(model1,4)
 
-## FINAL MODEL------------------------
+## FINAL MODEL 1------------------------
 
 
 final_model1 <- lm(Price ~ Rooms + Bathroom + Landsize + RoadType_Cct + RoadType_Cir + RoadType_Cl + Type_t + Type_u + Method_S + Method_VB + SellerG_Biggin + SellerG_Buxton + SellerG_Fletchers + SellerG_Gary + SellerG_Greg + SellerG_hockingstuart + SellerG_Jellis + SellerG_Marshall + SellerG_Miles + SellerG_Nelson + SellerG_Ray + SellerG_RT + SellerG_Woodards + SellerG_X_other_, data = train)
@@ -321,6 +336,7 @@ summary(final_model1)
 nm <- names(final_model1$coefficients)
 nm <- nm[-1]
 
+# par(mar=c(1,1,1,1))
 pairs(train[,c('Price',nm)])
 
 # checking rmse
@@ -405,14 +421,15 @@ final_rf_model1 <- rf_model1 %>%
   finalize_model(select_best(tune_model1,'rmse')) %>% 
   fit(Price~., data = train)
 
-## VIP
+## VIP: Variable Importance Plots
 
 final_rf_model1 %>% 
   vip(geom='col', aesthetics=list(fill='blue', aplha=0.8)) + 
   scale_y_continuous(expand = c(0,0))
 
 saveRDS(final_rf_model1,file=paste0(path,'final_rf_model1.RDS'))
-# readRDS(file=paste0(path,'final_rf_model1.RDS'))
+
+# final_rf_model1 <- readRDS("C:/Users/91835/Dropbox/PC/Courses/EDVANCER_EDUVENTURES/PROJECT/Project1- Real Estate/final_rf_model1.RDS")
 
 ## predictions
 
