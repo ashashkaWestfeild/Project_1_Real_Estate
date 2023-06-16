@@ -451,6 +451,17 @@ rmse_train <- error_train**2 %>% mean() %>% sqrt # 196445.4
 
 # 212467/rmse_train = 1.081558
 
+##------------------------------
+# Adjusted R-squared = 1-(1-R-squared)*(n-1)/(n-k-1)
+# R squared (OOB):0.7661873 
+r_sqr <- 0.7661873
+n <- 7536
+k <- 56
+adj_r_sqr <- 1-((1-r_sqr)*(n-1)/(n-k-1))
+# Adjusted R-squared = 0.7646823
+
+
+##------------------------------
 ## Why rmse_train keeps changing in RF whenever you run again and again?
 ## 1) Because rows and columns are randomized at node
 ## 2) 2nd reason is BOOSTRAPPING
