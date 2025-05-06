@@ -1,0 +1,84 @@
+1.What buisness problem your project will solve?
+The project addresses the business problem of consistent property pricing in the real estate industry by developing a predictive model using historical housing data. This model enables real estate firms to accurately predict property prices, leading to consistent pricing strategies. By attracting buyers, optimizing property development, and making informed decisions based on factors that impact property value, the project aims to enhance business success in the real estate market.
+
+2.Understand the shape of the data (Histograms, box plots, etc.)
+Loading the data: The dataset was loaded into R to facilitate data access and analysis.
+Checking the dependent variable: The glimpse() function was used to obtain an overview of the dataset, including the variable types. Identifying the dependent variable is crucial as it represents the target or outcome to be predicted or analyzed.
+Checking missing values: An assessment was conducted to identify any missing values in the dataset. Missing data can impact the quality of the analysis and may require imputation or other handling strategies.
+Histogram and box plot analysis for numeric features: Histograms and box plots were utilized to examine the distribution of numeric features, including the dependent variable. Histograms provide insights into the frequency or count of values within specific intervals, while box plots summarize central tendency, spread, and the presence of outliers in the data.
+Identifying right-skewness: Through the observation of histograms and box plots, it was determined that many of the numeric columns exhibited a right-skewed distribution. Right-skewness implies that the majority of values are concentrated towards the lower end of the distribution, with a long tail extending towards higher values.
+Proportional analysis of categorical columns: For categorical columns, the prop.table() function was utilized to calculate and visualize the proportions of different categories within each column. This enabled an understanding of the distribution and relative frequencies of the categorical variables.
+Bar plot on categorical features: To further explore the categorical features, bar plots were created. A bar plot provides a graphical representation of the distribution of categories within a categorical variable, allowing for easy comparison and visualization.
+
+3.Data Cleaning & Exploration
+Correcting CouncilArea: Replaced incorrect CouncilArea values with the correct ones using postcode information from the official government site.
+Salvaging RoadType: Extracted the RoadType information from the address column as it can potentially impact house prices.
+Correlation Analysis: Explored the correlation between numeric features and the outcome variable to identify significant relationships.
+Handling Invalid Landsize: Addressed the issue of houses with valid numbers of rooms having a landsize of 0. Replaced 0 landsize values for houses with a specific number of rooms with the mean landsize for houses with the same number of rooms.
+Feature Importance: Identified 5 significant RoadTypes that have a substantial impact on the outcome variable. Created dummy variables for these 5 RoadTypes and grouped the remaining RoadTypes as "RoadType_other".
+Data Type Conversion: Converted the SellerG and Suburb columns to character format to prevent unintended data conversions.
+These steps summarize the data cleaning and exploration process, where data inconsistencies were addressed, relevant features were extracted, and necessary transformations were applied to prepare the data for modeling and analysis.
+  
+4.Feature Engineering
+RoadType: Applied one-hot encoding to create binary indicator columns.
+SellerG, Type, Method, CouncilArea: Applied count encoding to create new features representing the count of occurrences for each unique value in the respective columns.
+By applying these feature engineering techniques, we have transformed the categorical columns into numerical representations that capture additional information about the data. 
+
+5.Model selection (Why particular model is selected?)
+Initial Choice: Linear Regression was chosen as the initial model due to the continuous nature of the dependent variable. However, the presence of skewness in the data raised concerns about potential non-linearity.
+Diagnostic Plots: Diagnostic plots were generated to assess the linearity assumption and identify any deviations or patterns in the data. These plots indicated the presence of non-linearity, suggesting that linear regression may not be the most suitable model.
+Final Model Selection: Random Forest was ultimately selected as the final model. Random Forest is an ensemble learning method known for its versatility and robustness. It can effectively handle non-linear relationships and accommodate skewed data. Additionally, Random Forest is capable of capturing complex interactions between variables, leading to accurate predictions.
+The decision to choose Random Forest as the final model was based on its ability to address the identified non-linearity in the data and provide reliable predictions given the specific characteristics of the dataset.
+
+6.Data Preprocessing for Model
+To preprocess the data for modeling, the following steps will be applied using the recipe() function:
+Dropping Features: Remove features that are deemed unnecessary or have a high percentage of missing data. In this case, the features BuildingArea, YearBuilt, Address, and RoadType will be dropped.
+Creating Dummy Variables: Create dummy variables for categorical features SellerG, Type, Method, and CouncilArea.
+Missing Value Imputation: Replace missing values in the columns Bedroom2, Bathroom, Car, and Landsize with their respective medians.
+Estimating the Preprocessed Recipe: Use the prep() function to estimate the preprocessed recipe.
+Applying the Prepped Recipe: Apply the prepped recipe on the train and test data using the bake() function.
+By following these steps, the data will be properly preprocessed, including dropping irrelevant features, creating dummy variables, and handling missing values. This will ensure that the data is ready for model training and evaluation.
+
+7.Basic Model Building & Model Tuning
+Following are the breakdown of the key points of initial model building and tuning steps:
+Data Split: The train dataset was divided into two parts, t1 (80%) for training the model and t2 (20%) for testing and evaluating the model's performance.
+Multicollinearity: The VIF (Variance Inflation Factor) was used to identify and remove features with high multicollinearity. Columns with a VIF score greater than 5 were iteratively removed.
+Model Tuning: The step function was utilized to automate the process of selecting the best predictors for the model. The p-value for the F-statistic was found to be less than 2.2e-16, indicating that the chosen predictors have a significant effect on the dependent variable.
+Model Evaluation: The adjusted R-squared value of 0.5037 was obtained, suggesting that the model explains 50.37% of the variability in the dependent variable.
+Prediction and Evaluation: The model was used to make predictions on the train and test datasets, and the RMSE (Root Mean Squared Error) values were calculated. The values obtained were 468507.6 for t1, 440573.4 for t2, and 462789.4 for the train dataset.
+Autocorrelation: The p-value from the Durbin-Watson test for the train model was found to be 0.376, which is greater than 0.05. This indicates that the residuals in the regression model are not autocorrelated.
+Assumption Validation: The diagnostic plots were examined, and it was determined that the data satisfies the assumptions, particularly the assumption of non-linearity.
+Regularization: It is mentioned that regularization can be considered to decrease overfitting and increase the stability of the model. However, it is noted that regularization does not improve predictive power; it primarily helps in balancing the data and reducing overfitting.
+Model Consistency and Predictive Power: The model is described as consistent but lacking in predictive power. This is also reflected in the small adjusted R-squared value, indicating that the model's predictive ability is not strong.
+Non-linear Techniques: It is suggested that non-linear techniques can be explored to increase the model's predictive power. Non-linear techniques offer greater flexibility in capturing complex relationships and may improve the model's performance.
+In summary, the initial model building process involved data splitting, multicollinearity removal, model tuning, and evaluation. The model was found to be consistent but lacking in predictive power. To enhance the model's predictive ability, non-linear techniques can be explored.
+
+8.Ensemble Model Building
+Based on the previous interpretations, the following is a summary of the ensemble model building process using random forest:
+Model Selection: Random forest is chosen as the ensemble model for the task. Since the target variable is continuous, the "mode" parameter is set to 'regression' to perform regression analysis. The "engine" parameter is set to 'ranger', indicating the use of the ranger package for implementing the random forest algorithm.
+Tuning Parameters: The random forest model has three tuning parameters: mtry, trees, and min_n.
+mtry represents the number of randomly selected predictors at each split.
+trees refers to the number of trees to be grown in the random forest.
+min_n represents the minimal node size, specifying the minimum number of observations required for a node to be further split.
+Cross-Validation: A cross-validation strategy with 10 folds is employed for tuning the random forest model. This ensures robust evaluation of the model's performance and helps prevent overfitting.
+Hyperparameter Grid: A grid of hyperparameters is created, consisting of 5 values for each of the three tuning parameters (mtry, trees, and min_n). This results in a total of 125 combinations of hyperparameters.
+Grid Search and Model Selection: The grid of random forest models is tuned based on the validation metric, which is the root mean squared error (RMSE) in this case. The model with the best performance on the validation set is selected as the final model.
+Variable Importance Plots: Once the best model is identified, variable importance plots are generated. These plots provide insights into the relative importance of different predictors in the random forest model. They help in understanding which features have the most significant impact on the target variable.
+By following this ensemble model building approach using random forest, we aim to select the best-performing model from the hyperparameter grid based on RMSE and gain insights into the variable importance.
+
+
+9.Results
+Final Random Forest Model: RMSE_t1 = 198,307.3, RMSE_t2 = 188,819.4, RMSE_train = 196,445.4, Adjusted R-squared = 0.764.
+Predictive Power: The final random forest model outperformed the previous linear model with an RMSE of 462,789.4. It accurately predicts property prices, leading to enhanced business success in the real estate market.
+Feature Importance: Postcode, Rooms, Type_u, and Distance have significant impacts on property prices according to the model. These features stand out, highlighting their importance in predicting property values.
+Business Value: The model's consistent property pricing attracts buyers, optimizes property development, and improves decision-making in the real estate industry. This leads to enhanced business success, increased customer satisfaction, and improved profitability.
+Limitations:
+Despite its predictive power, the model may have limitations in capturing all factors influencing property prices. Other variables or external factors not included in the dataset could impact property values.
+The model's performance may vary depending on the quality and completeness of the data used for training and prediction.
+Future Directions:
+To further enhance the model's predictive performance, exploring additional variables or incorporating external data sources could be considered.
+Continual monitoring and updating of the model with new data can help maintain its accuracy and relevance in a dynamic real estate market.
+
+Overall, the final random forest model demonstrates superior predictive power compared to the previous linear model, offering accurate property price predictions. By incorporating essential features and addressing the business problem of consistent pricing, the model contributes to enhanced business success in the real estate market.
+
+
